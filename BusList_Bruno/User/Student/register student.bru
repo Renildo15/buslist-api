@@ -1,0 +1,21 @@
+meta {
+  name: register student
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/users/student/20200080125/register/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username":"habby_19",
+    "email":"renildorabi19@gmail.com",
+    "first_name":"Renildo",
+    "last_name":"Vale Dos Santos",
+    "password":"Senha123!"
+  }
+}

@@ -1,0 +1,30 @@
+meta {
+  name: institutions create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/institutions/institutions/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MTYyNjM5LCJpYXQiOjE3MjgwNzYyMzksImp0aSI6ImQ3NzhlM2JjNWZkZDQ4ZGVhODE5MTBiNjFhMDdmZTEyIiwidXNlcl9pZCI6IjVlN2ZhYjVkLTlhNjAtNGJlMy05OGE5LWE1N2I4ODg3N2UzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.nQOut3M1HSbTDLHAFqtLsAlb6wUbg6kcKFzODOZlLUU
+}
+
+body:json {
+  {
+    "address": {
+      "address": "Av. Senador Doce Pai, 4000",
+      "city": "Natal",
+      "state": "RN",
+      "zip_code": "59078970"
+    },
+    "name": "Universidade Federal do Rio Grande do Sil",
+    "phone_number": "84 3342-2000",
+    "acronym": "UFRS",
+    "in_vacation": false
+  }
+}

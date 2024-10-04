@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Universidade Federal do Rio Grande do Norte",
+        "acronym": "UFRN",
+        "phone_number": "84 3342-2000",
+        "address": "Av. Senador Salgado Filho, 3000",
+        "city": "Natal",
+        "state": "RN",
+        "zip_code": "59078970"
+    },
+    {
+        "name": "Instituto Federal do Rio Grande do Norte",
+        "acronym": "IFRN",
+        "phone_number": "84 4005-2600",
+        "address": "Av. Salgado Filho, 1559",
+        "city": "Natal",
+        "state": "RN",
+        "zip_code": "59015000"
+    },
+    {
+        "name": "Universidade do Estado do Rio Grande do Norte",
+        "acronym": "UERN",
+        "phone_number": "84 3315-2157",
+        "address": "R. Almino Afonso, 478",
+        "city": "Mossoró",
+        "state": "RN",
+        "zip_code": "59610210"
+    },
+    {
+        "name": "Universidade Norte do Paraná",
+        "acronym": "UNOPAR",
+        "phone_number": "43 3371-7700",
+        "address": "Av. Paris, 675",
+        "city": "Londrina",
+        "state": "PR",
+        "zip_code": "86041140"
+    }
+]

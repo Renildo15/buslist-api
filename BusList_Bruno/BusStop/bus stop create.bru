@@ -1,0 +1,27 @@
+meta {
+  name: bus stop create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/busstops/bus-stop-create/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MDc3MjM3LCJpYXQiOjE3Mjc5OTA4MzcsImp0aSI6IjljMzVmNzljNDUzZDRiMWRhZDdiYTg3MTAzNzcwZTY2IiwidXNlcl9pZCI6IjVlN2ZhYjVkLTlhNjAtNGJlMy05OGE5LWE1N2I4ODg3N2UzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.LunvjrE4BQAXmP2S2TRh6A7XsLP7ZWj4tElygKmZz0E
+}
+
+body:json {
+  {
+    "name":"Parada 1",
+    "address": {
+      "address": "Rua Santa Terezinha",
+      "city":"Jucurutu",
+      "state":"RN",
+      "zip_code":"59330000"
+    }
+  }
+}

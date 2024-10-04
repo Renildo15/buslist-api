@@ -1,0 +1,15 @@
+meta {
+  name: buslist get all list
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://127.0.0.1:8000/api/buslists/list/
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NjQ1NTQ0LCJpYXQiOjE3Mjc1NTkxNDQsImp0aSI6ImNhOGUwYjRhMTJjOTQ4ZjNhMDU5MjZlYmFjM2RhNGNjIiwidXNlcl9pZCI6IjVlN2ZhYjVkLTlhNjAtNGJlMy05OGE5LWE1N2I4ODg3N2UzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.YeTiBNTP873rCKVdeiT_-a1f4BfjNLpYrITvlJ-y-gg
+}

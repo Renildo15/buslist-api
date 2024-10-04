@@ -1,0 +1,26 @@
+meta {
+  name: buslist create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/api/buslists/create/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NjQ1NTQ0LCJpYXQiOjE3Mjc1NTkxNDQsImp0aSI6ImNhOGUwYjRhMTJjOTQ4ZjNhMDU5MjZlYmFjM2RhNGNjIiwidXNlcl9pZCI6IjVlN2ZhYjVkLTlhNjAtNGJlMy05OGE5LWE1N2I4ODg3N2UzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.YeTiBNTP873rCKVdeiT_-a1f4BfjNLpYrITvlJ-y-gg
+}
+
+body:json {
+  {
+    "name":"LISTA TARDE - QUARTA",
+    "list_date":"2024-10-21",
+    "list_time_initial":"07:00:00",
+    "list_time_final":"09:00:00",
+    "shift":"V",
+    "type_creation":"MANUAL"
+  }
+}

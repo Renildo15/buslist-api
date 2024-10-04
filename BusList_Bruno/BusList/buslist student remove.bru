@@ -1,0 +1,22 @@
+meta {
+  name: buslist student remove
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://127.0.0.1:8000/api/buslists/student/remove/7e2d44da-d60a-450d-a952-5be514532a73/96c1eb76-04ea-4e64-adac-10c504666083/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NzI1NzM3LCJpYXQiOjE3Mjc2MzkzMzcsImp0aSI6IjlhMzg5MGNhMWZmNzQ3YjM4OThkZWJjZGRmNWExZDdhIiwidXNlcl9pZCI6Ijk2YzFlYjc2LTA0ZWEtNGU2NC1hZGFjLTEwYzUwNDY2NjA4MyIsInVzZXJuYW1lIjoiaGFiYnlfMTkifQ.eSZmfOb-hS2lyOwhQ-XYu5NxmvWUH5TALx8BTHaBGk8
+}
+
+body:json {
+  {
+    "end_class_time":"17:00:00",
+    "is_return":"true"
+  }
+}

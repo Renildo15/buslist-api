@@ -1,0 +1,21 @@
+meta {
+  name: update student profile
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://127.0.0.1:8000/api/users/student/96c1eb76-04ea-4e64-adac-10c504666083/profile/update/
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4MDc4OTAyLCJpYXQiOjE3Mjc5OTI1MDIsImp0aSI6IjY3NzM1ZjRhMjkxYjQ4MTg5MzdmY2U5NDM2NDcwMDE0IiwidXNlcl9pZCI6Ijk2YzFlYjc2LTA0ZWEtNGU2NC1hZGFjLTEwYzUwNDY2NjA4MyIsInVzZXJuYW1lIjoiaGFiYnlfMTkifQ.GsRP73tyD78NF-Afox3IOw4XckUws47Jd6lZfif4DNU
+}
+
+body:multipart-form {
+  bus_stop: 029e441e-8bb7-487a-9ea9-e84a8e7cd4d2
+  ~avatar: @file(/home/habby/Imagens/Captura de tela de 2024-09-22 19-00-58.png)
+  ~phone_number: (84) 99838-7320
+}

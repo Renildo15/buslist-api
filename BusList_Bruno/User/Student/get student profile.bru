@@ -1,0 +1,24 @@
+meta {
+  name: get student profile
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://127.0.0.1:8000/api/users/student/96c1eb76-04ea-4e64-adac-10c504666083/profile/
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  user: 96c1eb76-04ea-4e64-adac-10c504666083
+  avatar: @file(/home/habby/Imagens/Captura de tela de 2024-09-22 19-00-58.png)
+  institution: a78be319-dc0d-4fee-bad4-377007920660
+  phone_number: (84) 99838-7320
+  matric_number: 20200080125
+  sex: M
+  status: ATIVO
+  teaching_level: GRADUACAO
+  course_name: Sistemas de Informação
+  bus_stop: 
+}

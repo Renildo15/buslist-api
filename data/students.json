@@ -1,0 +1,90 @@
+[
+    {
+        "name_student": "Renildo Rabi Vale Dos Santos",
+        "sex_student": "M",
+        "matriculation_student": "20200080125",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Sistemas de Informação"
+    },
+    {
+        "name_student": "Ana Clara Souza Fernandes",
+        "sex_student": "F",
+        "matriculation_student": "20200080126",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Direito"
+    },
+    {
+        "name_student": "Carlos Henrique da Silva",
+        "sex_student": "M",
+        "matriculation_student": "20200080127",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Engenharia Civil"
+    },
+    {
+        "name_student": "Bruna Maria Oliveira Santos",
+        "sex_student": "F",
+        "matriculation_student": "20200080128",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Medicina"
+    },
+    {
+        "name_student": "Felipe Augusto Nunes",
+        "sex_student": "M",
+        "matriculation_student": "20200080129",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Administração"
+    },
+    {
+        "name_student": "Isabela Almeida Costa",
+        "sex_student": "F",
+        "matriculation_student": "20200080130",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Psicologia"
+    },
+    {
+        "name_student": "Rafael Borges Pereira",
+        "sex_student": "M",
+        "matriculation_student": "20200080131",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Arquitetura"
+    },
+    {
+        "name_student": "Juliana Ribeiro Santos",
+        "sex_student": "F",
+        "matriculation_student": "20200080132",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Biomedicina"
+    },
+    {
+        "name_student": "Lucas Fernandes da Rocha",
+        "sex_student": "M",
+        "matriculation_student": "20200080133",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Ciências Contábeis"
+    },
+    {
+        "name_student": "Mariana Silva Ferreira",
+        "sex_student": "F",
+        "matriculation_student": "20200080134",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Design"
+    },
+    {
+        "name_student": "Pedro Paulo Rodrigues",
+        "sex_student": "M",
+        "matriculation_student": "20200080135",
+        "status_student": "Ativo",
+        "teaching_level_student": "Graduação",
+        "course_student": "Engenharia de Produção"
+    }
+]
