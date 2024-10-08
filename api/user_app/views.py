@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from api.permissions import IsStudent
+from api.permissions import IsAdmin, IsStudent
 
 from .models import User
 from .serializers import *
@@ -58,7 +59,7 @@ def student_profile_view(request, user_uuid):
         if serializer.is_valid():
             student_profile = serializer.save(user=user)
             student_profile.save()
-            add_user_to_group(user, "STUDENT")
+            add_user_to_group(user, "Student")
 
             data = {"message": "Student profile created successfully"}
 
@@ -99,3 +100,19 @@ def student_profile_update_view(request, user_uuid):
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdmin])
+def staff_get_all_users_view(request):
+    if request.method == "GET":
+        users = User.objects.all()
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        result_page = paginator.paginate_queryset(users, request)
+        serializer = UserStudentSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    else:
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -16,9 +17,13 @@ from .serializers import *
 def bus_list_enable_list_view(request):
     if request.method == "GET":
         bus_list = BusList.objects.filter(is_enable=True)
-        serializer = BusListSerializer(bus_list, many=True)
-        data = {"bus_list": serializer.data}
-        return Response(data, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        result_page = paginator.paginate_queryset(bus_list, request)
+
+        serializer = BusListSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
@@ -30,9 +35,13 @@ def bus_list_enable_list_view(request):
 def bus_list_get_all_view(request):
     if request.method == "GET":
         bus_list = BusList.objects.all()
-        serializer = BusListSerializer(bus_list, many=True)
-        data = {"bus_list": serializer.data}
-        return Response(data, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        result_page = paginator.paginate_queryset(bus_list, request)
+        serializer = BusListSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED

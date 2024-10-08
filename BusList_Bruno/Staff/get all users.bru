@@ -1,0 +1,15 @@
+meta {
+  name: get all users
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://127.0.0.1:8000/api/users/staff/list/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4NTA2Mjg1LCJpYXQiOjE3Mjg0MTk4ODUsImp0aSI6IjA4NGYyYjM5ZDE0MzQxNDA4ZTM5NDY4NThlODg4NDBjIiwidXNlcl9pZCI6IjI1NWJhY2M3LWVjNWItNDQ5NS04NmY4LTAxOTEzNzFjZmJhOSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.-EKm9RcYEtsDMWQKyq3w20tesDUpcoUiQNAS0HWabOc
+}
