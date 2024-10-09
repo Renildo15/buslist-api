@@ -7,9 +7,11 @@ from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
 from api.user_app.models import User
+from api.search import apply_search
 
 from .models import *
 from .serializers import *
+from .filters import apply_filters_bus_list
 
 
 @api_view(["GET"])
@@ -17,6 +19,11 @@ from .serializers import *
 def bus_list_enable_list_view(request):
     if request.method == "GET":
         bus_list = BusList.objects.filter(is_enable=True)
+        
+        bus_list = apply_filters_bus_list(bus_list, request)
+        search_query = request.query_params.get("search")
+        bus_list = apply_search(bus_list, search_query)
+
         paginator = PageNumberPagination()
         paginator.page_size = 10
         result_page = paginator.paginate_queryset(bus_list, request)
@@ -35,6 +42,11 @@ def bus_list_enable_list_view(request):
 def bus_list_get_all_view(request):
     if request.method == "GET":
         bus_list = BusList.objects.all()
+
+        bus_list = apply_filters_bus_list(bus_list, request)
+        search_query = request.query_params.get("search")
+        bus_list = apply_search(bus_list, search_query)
+
         paginator = PageNumberPagination()
         paginator.page_size = 10
 
