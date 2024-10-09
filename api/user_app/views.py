@@ -12,7 +12,8 @@ from .models import User
 from .serializers import *
 from .service import UserService
 from .utils.add_user_to_group import add_user_to_group
-
+from .filters import apply_filters_users
+from api.search import apply_search
 
 # Create your views here.
 @api_view(["GET", "POST"])
@@ -107,6 +108,11 @@ def student_profile_update_view(request, user_uuid):
 def staff_get_all_users_view(request):
     if request.method == "GET":
         users = User.objects.all()
+    
+        users = apply_filters_users(users, request)
+        search_query = request.query_params.get("search")
+        users = apply_search(users, search_query)
+
         paginator = PageNumberPagination()
         paginator.page_size = 10
 

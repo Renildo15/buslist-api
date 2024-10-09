@@ -10,6 +10,15 @@ get {
   auth: bearer
 }
 
+params:query {
+  ~institution: UFRN
+  ~status: ATIVO
+  ~sex: M
+  ~is_driver: False
+  ~teaching_level: GRADUACAO
+  ~search: renildorabi19@gmail.com
+}
+
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4NTA2Mjg1LCJpYXQiOjE3Mjg0MTk4ODUsImp0aSI6IjA4NGYyYjM5ZDE0MzQxNDA4ZTM5NDY4NThlODg4NDBjIiwidXNlcl9pZCI6IjI1NWJhY2M3LWVjNWItNDQ5NS04NmY4LTAxOTEzNzFjZmJhOSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.-EKm9RcYEtsDMWQKyq3w20tesDUpcoUiQNAS0HWabOc
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI4NTkzMjkwLCJpYXQiOjE3Mjg1MDY4OTAsImp0aSI6IjYwODkxNzQ0OTUyZTQ4ODBhMWEyYmU0NTE2MGUwMTM0IiwidXNlcl9pZCI6IjI1NWJhY2M3LWVjNWItNDQ5NS04NmY4LTAxOTEzNzFjZmJhOSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.k-RvyDal4BuM0eyJl4pjHxehJcarBazm_YuW_iE8y3g
 }
