@@ -16,37 +16,49 @@ from .filters import apply_filters_users
 from api.search import apply_search
 
 # Create your views here.
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 @authentication_classes([])
 @permission_classes([AllowAny])
-def student_view(request, matric_number):
-    user_service = UserService()
+def student_create_view(request):
+    serializer = UserStudentRegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        user.is_student = True
+        user.save()
 
-    if request.method == "GET":
-        student = user_service.get_user_in_students_list(matric_number)
+        data = {"message": "Student created successfully"}
+        return Response(data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if student:
-            serializer = UserStudentFromJsonFileSerializer(data=student)
-            if serializer.is_valid():
-                data = {"student": serializer.data}
-
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def student_get_info_view(request):
+    if request.method == 'POST':
+        user_service = UserService()
+        serializer = UserStudentByMatricSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            student_info = user_service.get_user_in_students_list(serializer.validated_data['matric'])
+            
+            if student_info:
+                student_serializer = UserStudentFromJsonFileSerializer(student_info)
+                
+                data = {"student": student_serializer.data}
                 return Response(data, status=status.HTTP_200_OK)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Estudante não encontrado."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
         else:
-            return Response(
-                {"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND
-            )
-    else:
-        serializer = UserStudentRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            user.is_student = True
-            user.save()
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(
+        {"message": "Method not allowed"}, 
+        status=status.HTTP_405_METHOD_NOT_ALLOWED
+    )
 
-            data = {"message": "Student created successfully"}
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(["GET", "POST"])
