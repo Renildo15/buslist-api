@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdmin, IsStudent
+from api.user_app.utils.token import get_tokens_for_user
 
 from .models import User
 from .serializers import *
@@ -26,7 +27,13 @@ def student_create_view(request):
         user.is_student = True
         user.save()
 
-        data = {"message": "Student created successfully"}
+        tokens = get_tokens_for_user(user)
+        data = {
+            "message": "Student profile created successfully",
+            "refresh_token": tokens['refresh'],
+            "access_token": tokens['access'],
+            "student": UserStudentSerializer(user).data,
+        }
         return Response(data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
