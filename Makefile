@@ -8,7 +8,7 @@ migrate:
 	python manage.py migrate
 #executa o servidor
 server:
-	python manage.py runserver
+	python manage.py runserver 192.168.1.12:8000
 
 admin:
 	python manage.py initadmin
