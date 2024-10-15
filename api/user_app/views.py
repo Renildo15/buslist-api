@@ -27,6 +27,8 @@ def student_create_view(request):
         user.is_student = True
         user.save()
 
+        add_user_to_group(user, "Student")
+
         tokens = get_tokens_for_user(user)
         data = {
             "message": "Student profile created successfully",
@@ -79,8 +81,7 @@ def student_profile_view(request, user_uuid):
         if serializer.is_valid():
             student_profile = serializer.save(user=user)
             student_profile.save()
-            add_user_to_group(user, "Student")
-
+            
             data = {"message": "Student profile created successfully"}
 
             return Response(data, status=status.HTTP_201_CREATED)
