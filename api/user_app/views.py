@@ -75,9 +75,6 @@ def student_get_info_view(request):
         status=status.HTTP_405_METHOD_NOT_ALLOWED
     )
 
-
-
-
 @api_view(["GET", "POST"])
 @authentication_classes([])
 @permission_classes([AllowAny])
@@ -150,3 +147,14 @@ def staff_get_all_users_view(request):
         return paginator.get_paginated_response(serializer.data)
     else:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def whoami_view(request):
+    user = request.user
+    serializer = UserStudentSerializer(user)
+
+    data = {"user": serializer.data}
+
+    return Response(data, status=status.HTTP_200_OK)
