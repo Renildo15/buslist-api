@@ -16,12 +16,21 @@ from .utils.add_user_to_group import add_user_to_group
 from .filters import apply_filters_users
 from api.search import apply_search
 
+
+user_service = UserService()
 # Create your views here.
 @api_view(["POST"])
 @authentication_classes([])
 @permission_classes([AllowAny])
-def student_create_view(request):
+def student_create_view(request, matric):
     serializer = UserStudentRegisterSerializer(data=request.data)
+
+    if not user_service.is_student_in_list(matric):
+        return Response(
+            {"error": "Estudante não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
     if serializer.is_valid():
         user = serializer.save()
         user.is_student = True
@@ -44,7 +53,6 @@ def student_create_view(request):
 @permission_classes([AllowAny])
 def student_get_info_view(request):
     if request.method == 'POST':
-        user_service = UserService()
         serializer = UserStudentByMatricSerializer(data=request.data)
         
         if serializer.is_valid():
