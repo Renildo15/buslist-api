@@ -154,7 +154,35 @@ def staff_get_all_users_view(request):
 def whoami_view(request):
     user = request.user
     serializer = UserStudentSerializer(user)
-
     data = {"user": serializer.data}
 
     return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def change_password_view(request, user_uuid):
+    if request.method == 'PUT':
+        user = get_object_or_404(User, id=user_uuid)
+
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if new_password != confirm_password:
+            return Response(
+                {"error": "As senhas não coincidem."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {"message": "Senha alterada com sucesso."}, 
+            status=status.HTTP_200_OK
+        )
+    else:
+        return Response(
+            {"message": "Method not allowed"}, 
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
