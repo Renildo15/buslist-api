@@ -10,6 +10,9 @@ urlpatterns = [
     path("whoami/", whoami_view),
     path("change_password/<str:user_uuid>/", change_password_view),
     path("reset_password/", reset_password_view),
+    path(
+        "reset_password_confirm/<str:uidb64>/<str:token>/", reset_password_confirm_view
+    ),
 ]
 
 urlpatternsstaff = [path("staff/list/users", staff_get_all_users_view)]

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.html import strip_tags
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
@@ -234,4 +234,44 @@ def reset_password_view(request):
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password_confirm_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+
+        if default_token_generator.check_token(user, token):
+            new_password = request.data.get("new_password")
+            confirm_password = request.data.get("confirm_password")
+
+            if not new_password or not confirm_password:
+                return Response(
+                    {"error": "As senhas não podem ser vazias."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            if new_password != confirm_password:
+                return Response(
+                    {"error": "As senhas não coincidem."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            user.set_password(new_password)
+            user.save()
+
+            return Response(
+                {"message": "Senha alterada com sucesso."}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"error": "Token inválido ou expirado."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        return Response(
+            {"error": "Token inválido."}, status=status.HTTP_400_BAD_REQUEST
         )
