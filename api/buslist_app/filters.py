@@ -1,5 +1,3 @@
-
-
 def apply_filters_bus_list(queryset, request):
     filter_params = {
         "list_date": request.query_params.get("list_date"),

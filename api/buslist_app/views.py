@@ -6,12 +6,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
-from api.user_app.models import User
 from api.search import apply_search
+from api.user_app.models import User
 
+from .filters import apply_filters_bus_list
 from .models import *
 from .serializers import *
-from .filters import apply_filters_bus_list
 
 
 @api_view(["GET"])
@@ -24,7 +24,7 @@ def bus_list_enable_list_view(request):
 
         if date:
             bus_list = bus_list.filter(list_date=date)
-        
+
         bus_list = apply_filters_bus_list(bus_list, request)
         search_query = request.query_params.get("search")
         bus_list = apply_search(bus_list, search_query)

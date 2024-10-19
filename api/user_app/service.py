@@ -12,6 +12,7 @@ class UserService:
             if student["matriculation_student"] == matric_number:
                 return student
         return None
+
     def is_student_in_list(self, matric_number):
         for student in self.students_list:
             if student["matriculation_student"] == matric_number:

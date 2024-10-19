@@ -29,6 +29,7 @@ class UserStudentFromJsonFileSerializer(serializers.Serializer):
     teaching_level_student = serializers.CharField(max_length=21)
     course_student = serializers.CharField(max_length=100)
 
+
 class UserStudentByMatricSerializer(serializers.Serializer):
     matric = serializers.CharField(max_length=11)
 
