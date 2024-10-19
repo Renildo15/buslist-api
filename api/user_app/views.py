@@ -16,6 +16,15 @@ from .utils.add_user_to_group import add_user_to_group
 from .filters import apply_filters_users
 from api.search import apply_search
 
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.utils.html import strip_tags
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+from decouple import config
+
 
 user_service = UserService()
 # Create your views here.
@@ -181,6 +190,43 @@ def change_password_view(request, user_uuid):
             {"message": "Senha alterada com sucesso."}, 
             status=status.HTTP_200_OK
         )
+    else:
+        return Response(
+            {"message": "Method not allowed"}, 
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password_view(request):
+    if request.method == 'POST':
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            token = default_token_generator.make_token(user) 
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            reset_link = request.build_absolute_uri(
+                f'/reset-password/{uid}/{token}/'
+            )
+
+            subject = 'Redefinir senha'
+            html_message = render_to_string('password_reset_email.html', {'reset_link': reset_link})
+            plain_message = strip_tags(html_message)
+            from_email = config("EMAIL_HOST_USER")
+
+            send_mail(subject=subject, message=plain_message, from_email=from_email, recipient_list=[email], html_message=html_message)
+
+            return Response(
+                {"message": "Email enviado com sucesso."}, 
+                status=status.HTTP_200_OK
+            )
+
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Email não encontrado."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
     else:
         return Response(
             {"message": "Method not allowed"}, 

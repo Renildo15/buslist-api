@@ -9,6 +9,7 @@ urlpatterns = [
     path("student/<str:user_uuid>/profile/update/", student_profile_update_view),
     path("whoami/", whoami_view),
     path("change_password/<str:user_uuid>/", change_password_view),
+    path("reset_password/", reset_password_view),
 ]
 
 urlpatternsstaff = [path("staff/list/users", staff_get_all_users_view)]
