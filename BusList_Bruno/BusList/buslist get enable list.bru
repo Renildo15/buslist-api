@@ -5,11 +5,15 @@ meta {
 }
 
 get {
-  url: http://127.0.0.1:8000/api/buslists/list/enable/
+  url: http://127.0.0.1:8000/api/buslists/list/enable/?date=2024-10-21
   body: none
   auth: bearer
 }
 
+params:query {
+  date: 2024-10-21
+}
+
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3NzI0MTUyLCJpYXQiOjE3Mjc2Mzc3NTIsImp0aSI6ImQ5OGFlMGQzMzNlODQxODlhNDdkZjRlMjBjYTcwN2RjIiwidXNlcl9pZCI6IjVlN2ZhYjVkLTlhNjAtNGJlMy05OGE5LWE1N2I4ODg3N2UzZSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.a-Fi7uHSHJ3mj0SN4mUokRQmKISdcGv29WStxbYW99Y
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI5NDI2NDcxLCJpYXQiOjE3MjkzNDAwNzEsImp0aSI6Ijg2ZjkxNjA0YmYxZTQyYzM4NzcyY2ZlM2JlMzg1MjJiIiwidXNlcl9pZCI6IjI1NWJhY2M3LWVjNWItNDQ5NS04NmY4LTAxOTEzNzFjZmJhOSIsInVzZXJuYW1lIjoiYWRtaW4ifQ.nFGKxG4VxitOkopSjfX7Bx0o0bv4ogeYKyT9FXMWgDg
 }
