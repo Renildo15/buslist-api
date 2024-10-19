@@ -18,7 +18,12 @@ from .serializers import *
 @permission_classes([IsAuthenticated])
 def bus_list_enable_list_view(request):
     if request.method == "GET":
+
+        date = request.query_params.get("date")
         bus_list = BusList.objects.filter(is_enable=True)
+
+        if date:
+            bus_list = bus_list.filter(list_date=date)
 
         bus_list = apply_filters_bus_list(bus_list, request)
         search_query = request.query_params.get("search")
@@ -64,8 +69,15 @@ def bus_list_get_all_view(request):
 @permission_classes([IsAuthenticated, IsAdminOrIsDriver])
 def bus_list_create_view(request):
     if request.method == "POST":
+        buslists = BusList.objects.filter(is_enable=True).count()
         serializer = BusListCreateSerializer(data=request.data)
         if serializer.is_valid():
+            if buslists >= 3:
+                return Response(
+                    {"message": "Você já possui 3 listas de ônibus ativas hoje"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             serializer.save()
             data = {"message": "Bus list created successfully"}
 
