@@ -1,5 +1,6 @@
 from django.db.models import Q
 
+
 def apply_search(queryset, search_query):
     if search_query:
         queryset = queryset.filter(
