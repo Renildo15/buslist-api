@@ -12,7 +12,7 @@ class InstitutionAddressSerializer(serializers.ModelSerializer):
 class InstitutionAddressCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstitutionAddress
-        fields = ["address", "city", "state", "zip_code"]
+        fields = ["address", "neighborhood", "city", "state", "zip_code"]
 
 
 class InstitutionSerializer(serializers.ModelSerializer):
