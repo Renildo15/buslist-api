@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "corsheaders",
+    "django_celery_results",
+    "django_celery_beat",
     # apps
     "api.user_app",
     "api.institution_app",
@@ -230,10 +232,19 @@ LOGGING = {
     },
 }
 
-
+# Email settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"  # Replace with your SMTP host
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")  # Your email
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")  # Your password
 EMAIL_PORT = 465  # SMTP port
 EMAIL_USE_SSL = True  # Use SSL for secure connection
+
+# CELERY SETTINGS
+
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Sao_Paulo'

@@ -10,9 +10,15 @@ migrate:
 server:
 	python manage.py runserver 192.168.1.12:8000
 
+#shell
+shell:
+	python manage.py shell
+
 admin:
 	python manage.py initadmin
 
+celery-beat:
+	python manage.py migrate django_celery_beat
 
 #roda o docker-compose
 db:
@@ -20,6 +26,9 @@ db:
 #instala as dependências
 dependencies:
 	pip install -r requirements.txt
+#add dependências
+add-dependencies:
+	pip freeze > requirements.txt
 #rodar os testes com o unittest
 test_unittest:
 	python manage.py test
