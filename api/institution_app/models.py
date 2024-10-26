@@ -6,6 +6,7 @@ from django.db import models
 class InstitutionAddress(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     address = models.CharField(max_length=100)
+    neighborhood = models.CharField(max_length=50, null=True, blank=True)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=2)
     zip_code = models.CharField(max_length=8)

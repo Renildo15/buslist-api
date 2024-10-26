@@ -5,6 +5,7 @@ from django.db import models
 
 class BusStopAddress(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    neighborhood = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=2)
