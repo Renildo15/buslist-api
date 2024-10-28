@@ -22,6 +22,27 @@ class UserSerializer(serializers.ModelSerializer):
             "is_superuser",
         )
 
+class UserStudentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "email",
+        )
+
+    def validate_username(self, value):
+        request = self.context.get("request")
+        user = request.user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError("Username já está em uso.")
+        return value
+
+    def validate_email(self, value):
+        request = self.context.get("request")
+        user = request.user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError("Email já está em uso.")
+        return value
 
 class UserStudentFromJsonFileSerializer(serializers.Serializer):
     name_student = serializers.CharField(max_length=255)
@@ -111,6 +132,7 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(
         validators=[validate_phone_number], required=False
     )
+    user = UserStudentUpdateSerializer()
 
     class Meta:
         model = StudentProfile
@@ -118,6 +140,7 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
             "avatar",
             "phone_number",
             "bus_stop",
+            "user"
         ]
 
     def update(self, instance, validated_data):
@@ -126,11 +149,21 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
             "phone_number", instance.phone_number
         )
         instance.bus_stop = validated_data.get("bus_stop", instance.bus_stop)
+
+        user_data = validated_data.get("user")
+        user = instance.user
+
+        user.username = user_data.get("username", user.username)
+        user.email = user_data.get("email", user.email)
+        user.save()
+
         instance.save()
         return instance
 
 
 class UserStudentProfileSerializer(serializers.ModelSerializer):
+    institution = serializers.StringRelatedField()
+    bus_stop = serializers.StringRelatedField()
     class Meta:
         model = StudentProfile
         exclude = (

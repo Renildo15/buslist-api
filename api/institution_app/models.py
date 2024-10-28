@@ -39,4 +39,4 @@ class Institution(models.Model):
         verbose_name_plural = "Institutions"
 
     def __str__(self):
-        return f"{self.name} - {self.acronym}"
+        return f"{self.acronym}"
