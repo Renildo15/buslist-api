@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "corsheaders",
+    "django_cleanup.apps.CleanupConfig",
     # apps
     "api.user_app",
     "api.institution_app",
