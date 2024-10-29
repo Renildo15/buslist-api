@@ -13,6 +13,8 @@ server:
 admin:
 	python manage.py initadmin
 
+add-dependencies:
+	pip freeze > requirements.txt
 
 #roda o docker-compose
 db:
