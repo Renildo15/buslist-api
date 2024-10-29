@@ -275,3 +275,31 @@ def reset_password_confirm_view(request, uidb64, token):
         return Response(
             {"error": "Token inválido."}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def avatar_upload_view(request):
+    if request.method == "PATCH":
+        try:
+            user = request.user
+            student_profile = StudentProfile.objects.get(user=user)
+        except StudentProfile.DoesNotExist:
+            return Response(
+                {"error": "Perfil de estudante não encontrado."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
+        student_profile.avatar = request.data["avatar"]
+        student_profile.save()
+
+        return Response(
+            {"message": "Avatar atualizado com sucesso."}, status=status.HTTP_200_OK
+        )
+
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+    

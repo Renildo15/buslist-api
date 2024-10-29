@@ -128,7 +128,6 @@ class UserStudentProfileCreateSerializer(serializers.ModelSerializer):
 
 
 class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(validators=[validate_avatar], required=False)
     phone_number = serializers.CharField(
         validators=[validate_phone_number], required=False
     )
@@ -137,14 +136,12 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
         fields = [
-            "avatar",
             "phone_number",
             "bus_stop",
             "user"
         ]
 
     def update(self, instance, validated_data):
-        instance.avatar = validated_data.get("avatar", instance.avatar)
         instance.phone_number = validated_data.get(
             "phone_number", instance.phone_number
         )
