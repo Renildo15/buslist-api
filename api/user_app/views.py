@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from api.permissions import IsAdmin, IsStudent
 from api.search import apply_search
 from api.user_app.utils.token import get_tokens_for_user
+from api.institution_app.models import Institution
+from api.busstop_app.models import BusStop
 
 from .filters import apply_filters_users
 from .models import User
@@ -83,38 +85,6 @@ def student_get_info_view(request):
     return Response(
         {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
     )
-
-
-@api_view(["GET", "POST"])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def student_profile_view(request, user_uuid):
-    if request.method == "POST":
-        user = User.objects.get(id=user_uuid)
-        serializer = UserStudentProfileCreateSerializer(data=request.data)
-
-        if serializer.is_valid():
-            student_profile = serializer.save(user=user)
-            student_profile.save()
-
-            data = {"message": "Student profile created successfully"}
-
-            return Response(data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == "GET":
-        user = get_object_or_404(User, id=user_uuid)
-        student_profile = user.studentprofile
-
-        serializer = UserStudentSerializer(user)
-        data = {"student": serializer.data}
-
-        return Response(data, status=status.HTTP_200_OK)
-    else:
-        return Response(
-            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
-
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsStudent])
@@ -302,4 +272,37 @@ def avatar_upload_view(request):
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
-    
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def user_student_create_profile_view(request):
+    if request.method == "POST":
+        user = request.user
+        serializer = UserStudentProfileCreateSerializer(data=request.data)
+        try:
+            institution = Institution.objects.get(name=request.data["institution"])
+        except Institution.DoesNotExist:
+            return Response(
+                {"error": "Instituição não encontrada."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            bus_stop = BusStop.objects.get(id=request.data["bus_stop"])
+        except BusStop.DoesNotExist:
+            return Response(
+                {"error": "Ponto de ônibus não encontrado."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        
+        if serializer.is_valid():
+            serializer.save(user=user, institution=institution, bus_stop=bus_stop)
+
+            data = {"message": "Student profile created successfully"}
+
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
