@@ -163,3 +163,34 @@ def notice_create_list_view(request, bus_list_id):
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def notice_list_all_view(request):
+    if request.method == "GET":
+        notices = Notice.objects.all()
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        result_page = paginator.paginate_queryset(notices, request)
+        serializer = NoticeSerilizer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def notice_get_view(request, notice_id):
+    if request.method == "GET":
+        notice = get_object_or_404(Notice, id=notice_id)
+        serializer = NoticeSerilizer(notice)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
