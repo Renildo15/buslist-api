@@ -45,6 +45,7 @@ class BusListStudentCreateSerializer(serializers.ModelSerializer):
 
 
 class NoticeSerilizer(serializers.ModelSerializer):
+    buslist = serializers.StringRelatedField()
     class Meta:
         model = Notice
         fields = "__all__"
