@@ -24,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_superuser",
         )
 
+
 class UserStudentUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -45,6 +46,7 @@ class UserStudentUpdateSerializer(serializers.ModelSerializer):
         if User.objects.exclude(pk=user.pk).filter(email=value).exists():
             raise serializers.ValidationError("Email já está em uso.")
         return value
+
 
 class UserStudentFromJsonFileSerializer(serializers.Serializer):
     name_student = serializers.CharField(max_length=255)
@@ -112,11 +114,7 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentProfile
-        fields = [
-            "phone_number",
-            "bus_stop",
-            "user"
-        ]
+        fields = ["phone_number", "bus_stop", "user"]
 
     def update(self, instance, validated_data):
         instance.phone_number = validated_data.get(
@@ -133,6 +131,7 @@ class UserStudentProfileUpdateSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
 class UserStudentProfileCreateSerializer(serializers.Serializer):
     phone_number = serializers.CharField(validators=[validate_phone_number])
@@ -156,9 +155,11 @@ class UserStudentProfileCreateSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+
 class UserStudentProfileSerializer(serializers.ModelSerializer):
     institution = serializers.StringRelatedField()
     bus_stop = serializers.StringRelatedField()
+
     class Meta:
         model = StudentProfile
         exclude = (

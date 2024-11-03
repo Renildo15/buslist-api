@@ -164,6 +164,7 @@ def notice_create_list_view(request, bus_list_id):
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def notice_list_all_view(request):
@@ -182,6 +183,7 @@ def notice_list_all_view(request):
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def notice_get_view(request, notice_id):
@@ -189,7 +191,26 @@ def notice_get_view(request, notice_id):
         notice = get_object_or_404(Notice, id=notice_id)
         serializer = NoticeSerilizer(notice)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsStudent])
+def notice_viewed_view(request, notice_id):
+    notice = get_object_or_404(Notice, id=notice_id)
+    if request.method == "PATCH":
+        notice.viewed = True
+        notice.save()
+
+        data = {
+            "message": "Notice updated successfully",
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
