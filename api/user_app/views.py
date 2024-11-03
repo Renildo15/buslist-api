@@ -13,11 +13,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from api.busstop_app.models import BusStop
+from api.institution_app.models import Institution
 from api.permissions import IsAdmin, IsStudent
 from api.search import apply_search
 from api.user_app.utils.token import get_tokens_for_user
-from api.institution_app.models import Institution
-from api.busstop_app.models import BusStop
 
 from .filters import apply_filters_users
 from .models import User
@@ -86,6 +86,7 @@ def student_get_info_view(request):
         {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
     )
 
+
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsStudent])
 def student_profile_update_view(request, user_uuid):
@@ -93,7 +94,10 @@ def student_profile_update_view(request, user_uuid):
     student_profile = user.studentprofile
     if request.method == "PATCH":
         serializer = UserStudentProfileUpdateSerializer(
-            student_profile, data=request.data, partial=True, context={"request": request}
+            student_profile,
+            data=request.data,
+            partial=True,
+            context={"request": request},
         )
         if serializer.is_valid():
             serializer.save()
@@ -259,7 +263,7 @@ def avatar_upload_view(request):
                 {"error": "Perfil de estudante não encontrado."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        
+
         student_profile.avatar = request.data["avatar"]
         student_profile.save()
 
@@ -271,6 +275,7 @@ def avatar_upload_view(request):
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -293,7 +298,7 @@ def user_student_create_profile_view(request):
                 {"error": "Ponto de ônibus não encontrado."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        
+
         if serializer.is_valid():
             serializer.save(user=user, institution=institution, bus_stop=bus_stop)
 
