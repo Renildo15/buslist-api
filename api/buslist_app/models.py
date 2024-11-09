@@ -73,6 +73,7 @@ class Notice(models.Model):
         db_table = "notice"
         verbose_name = "Notice"
         verbose_name_plural = "Notices"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title

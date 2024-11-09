@@ -6,10 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
-from api.search import apply_search
+from api.search import apply_search, apply_search_notices
 from api.user_app.models import User
 
-from .filters import apply_filters_bus_list
+from .filters import *
 from .models import *
 from .serializers import *
 
@@ -169,7 +169,12 @@ def notice_create_list_view(request, bus_list_id):
 @permission_classes([IsAuthenticated])
 def notice_list_all_view(request):
     if request.method == "GET":
-        notices = Notice.objects.all()
+        user = request.user
+        notices = Notice.objects.filter(buslist__students=user)
+
+        notices = apply_filters_notice(notices, request)
+        search_query = request.query_params.get("search")
+        notices = apply_search_notices(notices, search_query)
 
         paginator = PageNumberPagination()
         paginator.page_size = 10
