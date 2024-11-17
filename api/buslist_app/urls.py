@@ -16,6 +16,7 @@ urlpatterns = [
         bus_list_remove_student_view,
     ),
     path("buslist/<uuid:bus_list_id>/notices", notice_create_list_view),
+    path("students/<uuid:buslist_id>/", buslist_student_list_view),
     path("notices/", notice_list_all_view),
     path("notices/<uuid:notice_id>/", notice_get_view),
     path("notices/<uuid:notice_id>/viewed/", notice_viewed_view),
