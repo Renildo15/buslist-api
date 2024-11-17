@@ -13,6 +13,20 @@ class BusListSerializer(serializers.ModelSerializer):
         model = BusList
         fields = "__all__"
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if self.context.get("exclude_students", False):
+            representation = {
+                "id": instance.id,
+                "name": instance.name,
+                "list_date": instance.list_date,
+                "is_enable": instance.is_enable
+            }
+
+        return representation
+        
+
 
 class BusListCreateSerializer(serializers.ModelSerializer):
     name = serializers.CharField(validators=[validate_name])
@@ -32,9 +46,10 @@ class BusListCreateSerializer(serializers.ModelSerializer):
 
 
 class BusListStudentSerializer(serializers.ModelSerializer):
+    student = UserStudentSerializer()
     class Meta:
         model = BusListStudent
-        fields = "__all__"
+        fields = ["id","student","end_class_time", "is_return", "created_at", "updated_at"]
 
 
 class BusListStudentCreateSerializer(serializers.ModelSerializer):

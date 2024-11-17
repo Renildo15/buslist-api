@@ -138,6 +138,37 @@ def bus_list_remove_student_view(request, bus_list_id, student_id):
     return Response(data, status=status.HTTP_200_OK)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_list_view(request, buslist_id):
+    if request.method == "GET":
+
+        try:
+            buslist = BusList.objects.get(id=buslist_id)
+        except BusList.DoesNotExist:
+            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)
+
+        buslistStudents = BusListStudent.objects.filter(bus_list=buslist)
+
+        if buslistStudents.exists():
+            buslist_data = buslistStudents[0].bus_list
+            serializers = BusListStudentSerializer(buslistStudents, many=True)
+            buslist_serializer = BusListSerializer(buslist_data, context={"exclude_students":True})
+
+            data = {
+                "buslist":buslist_serializer.data,
+                "students": serializers.data
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Not found list"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
 @api_view(["POST", "GET"])
 @permission_classes([IsAuthenticated, IsAdminOrIsDriver])
 def notice_create_list_view(request, bus_list_id):
