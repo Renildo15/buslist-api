@@ -111,7 +111,7 @@ def bus_list_enable_disable_view(request, bus_list_id):
 def bus_list_student_create_view(request, bus_list_id, student_id):
     bus_list = get_object_or_404(BusList, id=bus_list_id)
     student = get_object_or_404(User, id=student_id)
-    serializer = BusListStudentCreateSerializer(data=request.data)
+    serializer = BusListStudentSerializer(data=request.data, context={"exclude_id":True})
 
     if serializer.is_valid():
         serializer.save(bus_list=bus_list, student=student)
@@ -168,6 +168,38 @@ def buslist_student_list_view(request, buslist_id):
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_update_view(request, buslist_student_id):
+    buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
+    if request.method == "PATCH":
+        serializer = BusListStudentSerializer(buslist_student, data=request.data, partial=True, context={"exclude_id":True})
+        if serializer.is_valid():
+            serializer.save()
+
+            data = {
+                "message": "Buslist student updated successfully"
+            }
+
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_detail_view(request, buslist_student_id):
+    buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
+    if request.method == "GET":
+        serializer = BusListStudentSerializer(buslist_student)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
 @api_view(["POST", "GET"])
 @permission_classes([IsAuthenticated, IsAdminOrIsDriver])

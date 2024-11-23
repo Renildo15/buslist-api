@@ -17,6 +17,8 @@ urlpatterns = [
     ),
     path("buslist/<uuid:bus_list_id>/notices", notice_create_list_view),
     path("students/<uuid:buslist_id>/", buslist_student_list_view),
+    path("students/update/<uuid:buslist_student_id>/", buslist_student_update_view),
+    path("student/detail/<uuid:buslist_student_id>/", buslist_student_detail_view),
     path("notices/", notice_list_all_view),
     path("notices/<uuid:notice_id>/", notice_get_view),
     path("notices/<uuid:notice_id>/viewed/", notice_viewed_view),
