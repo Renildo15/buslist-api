@@ -44,21 +44,31 @@ class BusListCreateSerializer(serializers.ModelSerializer):
             "type_creation",
         ]
 
-
 class BusListStudentSerializer(serializers.ModelSerializer):
+    # avatar = serializers.SerializerMethodField()
     student = UserStudentSerializer()
     class Meta:
         model = BusListStudent
-        fields = ["id","student","end_class_time", "is_return", "created_at", "updated_at"]
+        fields = ["id", "student", "end_class_time", "is_return", "created_at", "updated_at"]
 
+    # def get_avatar(self, instance):
+    #     student_profile = getattr(instance.student, 'studentprofile', None)
+    #     if student_profile and student_profile.avatar:
+    #         # request = self.context.get('request')
+    #         # return request.build_absolute_uri(student_profile.avatar.url) if request else student_profile.avatar.url
+    #         return student_profile.avatar.url 
+    #     return None
 
-class BusListStudentCreateSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
 
-    class Meta:
-        model = BusListStudent
-        fields = ["end_class_time", "is_return"]
+        if self.context.get("exclude_id", False):
+            representation = {
+                "end_class_time": instance.end_class_time,
+                "is_return": instance.is_return
+            }
 
-
+        return representation
 class NoticeSerilizer(serializers.ModelSerializer):
     buslist = serializers.StringRelatedField()
 
