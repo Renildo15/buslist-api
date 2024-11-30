@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
-from api.search import apply_search, apply_search_notices
+from api.search import apply_search, apply_search_notices, apply_search_students
 from api.user_app.models import User
 
 from .filters import *
@@ -149,14 +149,14 @@ def buslist_student_list_view(request, buslist_id):
             return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)
 
         buslistStudents = BusListStudent.objects.filter(bus_list=buslist)
+        buslistStudents = apply_filters_students(buslistStudents, request)
+        search_query = request.query_params.get("search")
+        buslistStudents = apply_search_students(buslistStudents, search_query)
 
         if buslistStudents.exists():
-            buslist_data = buslistStudents[0].bus_list
             serializers = BusListStudentSerializer(buslistStudents, many=True)
-            buslist_serializer = BusListSerializer(buslist_data, context={"exclude_students":True})
 
             data = {
-                "buslist":buslist_serializer.data,
                 "students": serializers.data
             }
 
@@ -279,6 +279,21 @@ def notice_viewed_view(request, notice_id):
         }
 
         return Response(data, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_detail_view(request, buslist_id):
+    if request.method == "GET":
+        try:
+            buslist = BusList.objects.get(id=buslist_id)
+        except BusList.DoesNotExist:
+            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)  
+        buslist_serializer = BusListSerializer(buslist, context={"exclude_students":True})
+        return Response(buslist_serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
