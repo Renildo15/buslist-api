@@ -111,8 +111,8 @@ def bus_list_enable_disable_view(request, bus_list_id):
 def bus_list_student_create_view(request, bus_list_id, student_id):
     bus_list = get_object_or_404(BusList, id=bus_list_id)
     student = get_object_or_404(User, id=student_id)
-    serializer = BusListStudentSerializer(data=request.data, context={"exclude_id":True})
-
+    serializer = BusListStudentCreateAndUpdateSerializer(data=request.data)
+    
     if serializer.is_valid():
         serializer.save(bus_list=bus_list, student=student)
         data = {
@@ -173,7 +173,7 @@ def buslist_student_list_view(request, buslist_id):
 def buslist_student_update_view(request, buslist_student_id):
     buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
     if request.method == "PATCH":
-        serializer = BusListStudentSerializer(buslist_student, data=request.data, partial=True, context={"exclude_id":True})
+        serializer = BusListStudentCreateAndUpdateSerializer(buslist_student, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
 
