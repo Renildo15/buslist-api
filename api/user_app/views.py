@@ -25,8 +25,15 @@ from .models import User
 from .serializers import *
 from .service import UserService
 from .utils.add_user_to_group import add_user_to_group
+from .utils.generate_numeric_token import generate_numeric_token
 
 user_service = UserService()
+
+def generate_token(user, device_type="web"):
+    if device_type == "mobile":
+        return generate_numeric_token(user)
+    else:
+        return default_token_generator.make_token(user)
 
 
 # Create your views here.
@@ -176,16 +183,20 @@ def change_password_view(request, user_uuid):
 def reset_password_view(request):
     if request.method == "POST":
         email = request.data.get("email")
+        device = request.data.get("device", "web")
         try:
             user = User.objects.get(email=email)
-            token = default_token_generator.make_token(user)
+            token = generate_token(user,device)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-            reset_link = request.build_absolute_uri(f"/reset-password/{uid}/{token}/")
+            if device == "web":
+                reset_link = request.build_absolute_uri(f"/reset-password/{uid}/{token}/")
+            else:
+                reset_link = f"Código de redefinição: {token}"
 
             subject = "Redefinir senha"
             html_message = render_to_string(
-                "password_reset_email.html", {"reset_link": reset_link}
+                "password_reset_email.html", {"reset_link": reset_link, "device":device}
             )
             plain_message = strip_tags(html_message)
             from_email = config("EMAIL_HOST_USER")
