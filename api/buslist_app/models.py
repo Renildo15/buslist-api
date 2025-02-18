@@ -37,7 +37,8 @@ class BusList(models.Model):
         verbose_name_plural = "Bus Lists"
 
     def __str__(self):
-        return self.name
+        formatted_date = self.list_date.strftime("%d/%m/%Y")
+        return f"{self.name} - {formatted_date}"
 
 
 class BusListStudent(models.Model):
@@ -62,6 +63,7 @@ class Notice(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     title = models.CharField(max_length=100)
     description = models.TextField()
+    viewed = models.BooleanField(default=False)
     buslist = models.ForeignKey(BusList, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -71,6 +73,7 @@ class Notice(models.Model):
         db_table = "notice"
         verbose_name = "Notice"
         verbose_name_plural = "Notices"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.title

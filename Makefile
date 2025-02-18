@@ -8,7 +8,7 @@ migrate:
 	python manage.py migrate
 #executa o servidor
 server:
-	python manage.py runserver 192.168.1.12:8000
+	python manage.py runserver 192.168.1.13:8000
 
 #shell
 shell:
@@ -19,6 +19,9 @@ admin:
 
 celery-beat:
 	python manage.py migrate django_celery_beat
+	
+add-dependencies:
+	pip freeze > requirements.txt
 
 #roda o docker-compose
 db:

@@ -6,10 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
-from api.search import apply_search
+from api.search import apply_search, apply_search_notices, apply_search_students
 from api.user_app.models import User
 
-from .filters import apply_filters_bus_list
+from .filters import *
 from .models import *
 from .serializers import *
 
@@ -111,8 +111,8 @@ def bus_list_enable_disable_view(request, bus_list_id):
 def bus_list_student_create_view(request, bus_list_id, student_id):
     bus_list = get_object_or_404(BusList, id=bus_list_id)
     student = get_object_or_404(User, id=student_id)
-    serializer = BusListStudentCreateSerializer(data=request.data)
-
+    serializer = BusListStudentCreateAndUpdateSerializer(data=request.data)
+    
     if serializer.is_valid():
         serializer.save(bus_list=bus_list, student=student)
         data = {
@@ -138,6 +138,69 @@ def bus_list_remove_student_view(request, bus_list_id, student_id):
     return Response(data, status=status.HTTP_200_OK)
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_list_view(request, buslist_id):
+    if request.method == "GET":
+
+        try:
+            buslist = BusList.objects.get(id=buslist_id)
+        except BusList.DoesNotExist:
+            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)
+
+        buslistStudents = BusListStudent.objects.filter(bus_list=buslist)
+        buslistStudents = apply_filters_students(buslistStudents, request)
+        search_query = request.query_params.get("search")
+        buslistStudents = apply_search_students(buslistStudents, search_query)
+
+        if buslistStudents.exists():
+            serializers = BusListStudentSerializer(buslistStudents, many=True)
+
+            data = {
+                "students": serializers.data
+            }
+
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Not found list"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_update_view(request, buslist_student_id):
+    buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
+    if request.method == "PATCH":
+        serializer = BusListStudentCreateAndUpdateSerializer(buslist_student, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+
+            data = {
+                "message": "Buslist student updated successfully"
+            }
+
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_student_detail_view(request, buslist_student_id):
+    buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
+    if request.method == "GET":
+        serializer = BusListStudentSerializer(buslist_student)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
 @api_view(["POST", "GET"])
 @permission_classes([IsAuthenticated, IsAdminOrIsDriver])
 def notice_create_list_view(request, bus_list_id):
@@ -159,6 +222,78 @@ def notice_create_list_view(request, bus_list_id):
         serializer = NoticeSerilizer(notice, many=True)
         data = {"notice": serializer.data}
         return Response(data, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def notice_list_all_view(request):
+    if request.method == "GET":
+        user = request.user
+        notices = Notice.objects.filter(buslist__students=user)
+
+        notices = apply_filters_notice(notices, request)
+        search_query = request.query_params.get("search")
+        notices = apply_search_notices(notices, search_query)
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+
+        result_page = paginator.paginate_queryset(notices, request)
+        serializer = NoticeSerilizer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def notice_get_view(request, notice_id):
+    if request.method == "GET":
+        notice = get_object_or_404(Notice, id=notice_id)
+        serializer = NoticeSerilizer(notice)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsStudent])
+def notice_viewed_view(request, notice_id):
+    notice = get_object_or_404(Notice, id=notice_id)
+    if request.method == "PATCH":
+        notice.viewed = True
+        notice.save()
+
+        data = {
+            "message": "Notice updated successfully",
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def buslist_detail_view(request, buslist_id):
+    if request.method == "GET":
+        try:
+            buslist = BusList.objects.get(id=buslist_id)
+        except BusList.DoesNotExist:
+            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)  
+        buslist_serializer = BusListSerializer(buslist, context={"exclude_students":True})
+        return Response(buslist_serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED

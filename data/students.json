@@ -5,7 +5,8 @@
         "matriculation_student": "20200080125",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Sistemas de Informação"
+        "course_student": "Sistemas de Informação",
+        "institution_student": "Universidade Federal do Rio Grande do Norte"
     },
     {
         "name_student": "Ana Clara Souza Fernandes",
@@ -13,7 +14,8 @@
         "matriculation_student": "20200080126",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Direito"
+        "course_student": "Direito",
+        "institution_student": "Universidade Federal do Rio Grande do Norte"
     },
     {
         "name_student": "Carlos Henrique da Silva",
@@ -21,7 +23,8 @@
         "matriculation_student": "20200080127",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Engenharia Civil"
+        "course_student": "Engenharia Civil",
+        "institution_student": "Universidade do Estado do Rio Grande do Norte"
     },
     {
         "name_student": "Bruna Maria Oliveira Santos",
@@ -29,7 +32,8 @@
         "matriculation_student": "20200080128",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Medicina"
+        "course_student": "Medicina",
+        "institution_student": "Universidade do Estado do Rio Grande do Norte"
     },
     {
         "name_student": "Felipe Augusto Nunes",
@@ -37,7 +41,8 @@
         "matriculation_student": "20200080129",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Administração"
+        "course_student": "Administração",
+        "institution_student": "Instituto Federal do Rio Grande do Norte"
     },
     {
         "name_student": "Isabela Almeida Costa",
@@ -45,7 +50,8 @@
         "matriculation_student": "20200080130",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Psicologia"
+        "course_student": "Psicologia",
+        "institution_student": "Instituto Federal do Rio Grande do Norte"
     },
     {
         "name_student": "Rafael Borges Pereira",
@@ -53,7 +59,8 @@
         "matriculation_student": "20200080131",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Arquitetura"
+        "course_student": "Arquitetura",
+        "institution_student": "Universidade Norte do Paraná"
     },
     {
         "name_student": "Juliana Ribeiro Santos",
@@ -61,7 +68,8 @@
         "matriculation_student": "20200080132",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Biomedicina"
+        "course_student": "Biomedicina",
+        "institution_student": "Universidade Norte do Paraná"
     },
     {
         "name_student": "Lucas Fernandes da Rocha",
@@ -69,7 +77,8 @@
         "matriculation_student": "20200080133",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Ciências Contábeis"
+        "course_student": "Ciências Contábeis",
+        "institution_student": "Universidade Norte do Paraná"
     },
     {
         "name_student": "Mariana Silva Ferreira",
@@ -77,7 +86,8 @@
         "matriculation_student": "20200080134",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Design"
+        "course_student": "Design",
+        "institution_student": "Universidade Norte do Paraná"
     },
     {
         "name_student": "Pedro Paulo Rodrigues",
@@ -85,6 +95,7 @@
         "matriculation_student": "20200080135",
         "status_student": "Ativo",
         "teaching_level_student": "Graduação",
-        "course_student": "Engenharia de Produção"
+        "course_student": "Engenharia de Produção",
+        "institution_student": "Instituto Federal do Rio Grande do Norte"
     }
 ]

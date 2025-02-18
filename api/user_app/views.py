@@ -13,6 +13,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from api.busstop_app.models import BusStop
+from api.institution_app.models import Institution
 from api.permissions import IsAdmin, IsStudent
 from api.search import apply_search
 from api.user_app.tasks import send_email_reset_password
@@ -86,37 +88,6 @@ def student_get_info_view(request):
     )
 
 
-@api_view(["GET", "POST"])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def student_profile_view(request, user_uuid):
-    if request.method == "POST":
-        user = User.objects.get(id=user_uuid)
-        serializer = UserStudentProfileCreateSerializer(data=request.data)
-
-        if serializer.is_valid():
-            student_profile = serializer.save(user=user)
-            student_profile.save()
-
-            data = {"message": "Student profile created successfully"}
-
-            return Response(data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == "GET":
-        user = get_object_or_404(User, id=user_uuid)
-        student_profile = user.studentprofile
-
-        serializer = UserStudentSerializer(user)
-        data = {"student": serializer.data}
-
-        return Response(data, status=status.HTTP_200_OK)
-    else:
-        return Response(
-            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
-
-
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsStudent])
 def student_profile_update_view(request, user_uuid):
@@ -124,7 +95,10 @@ def student_profile_update_view(request, user_uuid):
     student_profile = user.studentprofile
     if request.method == "PATCH":
         serializer = UserStudentProfileUpdateSerializer(
-            student_profile, data=request.data, partial=True
+            student_profile,
+            data=request.data,
+            partial=True,
+            context={"request": request},
         )
         if serializer.is_valid():
             serializer.save()
@@ -275,4 +249,66 @@ def reset_password_confirm_view(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         return Response(
             {"error": "Token inválido."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def avatar_upload_view(request):
+    if request.method == "PATCH":
+        try:
+            user = request.user
+            student_profile = StudentProfile.objects.get(user=user)
+        except StudentProfile.DoesNotExist:
+            return Response(
+                {"error": "Perfil de estudante não encontrado."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        student_profile.avatar = request.data["avatar"]
+        student_profile.save()
+
+        return Response(
+            {"message": "Avatar atualizado com sucesso."}, status=status.HTTP_200_OK
+        )
+
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def user_student_create_profile_view(request):
+    if request.method == "POST":
+        user = request.user
+        serializer = UserStudentProfileCreateSerializer(data=request.data)
+        try:
+            institution = Institution.objects.get(name=request.data["institution"])
+        except Institution.DoesNotExist:
+            return Response(
+                {"error": "Instituição não encontrada."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            bus_stop = BusStop.objects.get(id=request.data["bus_stop"])
+        except BusStop.DoesNotExist:
+            return Response(
+                {"error": "Ponto de ônibus não encontrado."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if serializer.is_valid():
+            serializer.save(user=user, institution=institution, bus_stop=bus_stop)
+
+            data = {"message": "Student profile created successfully"}
+
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )

@@ -29,7 +29,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ["192.168.1.12", "127.0.0.1"]
+ALLOWED_HOSTS = ["192.168.1.13", "127.0.0.1"]
 
 
 # Application definition
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_celery_results",
     "django_celery_beat",
+    "django_cleanup.apps.CleanupConfig",
     # apps
     "api.user_app",
     "api.institution_app",

@@ -6,7 +6,7 @@ from .models import BusStop, BusStopAddress
 class BusStopAddressCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusStopAddress
-        fields = ["address", "city", "state", "zip_code"]
+        fields = ["address", "neighborhood", "city", "state", "zip_code"]
 
 
 class BusStopAddressSerializer(serializers.ModelSerializer):

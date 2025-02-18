@@ -3,13 +3,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from api.permissions import IsAdmin
 
 from .serializers import *
 
 
 @api_view(["GET", "POST"])
-@permission_classes([IsAuthenticated, IsAdmin])
+@permission_classes([IsAuthenticated])
 def institution_list_create(request):
     if request.method == "GET":
         institutions = Institution.objects.all()
