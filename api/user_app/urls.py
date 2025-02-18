@@ -8,11 +8,11 @@ urlpatterns = [
     path("student/<str:user_uuid>/profile/update/", student_profile_update_view),
     path("student/profile/create/", user_student_create_profile_view),
     path("whoami/", whoami_view),
-    path("change_password/<str:user_uuid>/", change_password_view),
-    path("reset_password/", reset_password_view),
+    path("change-password/<str:user_uuid>/", change_password_view),
+    path("forgot-password/", reset_password_view),
     path("avatar/upload/", avatar_upload_view),
     path(
-        "reset_password_confirm/<str:uidb64>/<str:token>/", reset_password_confirm_view
+        "reset-password/<str:uidb64>/<str:token>/", reset_password_confirm_view
     ),
 ]
 

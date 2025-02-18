@@ -69,6 +69,13 @@ class BusListStudentSerializer(serializers.ModelSerializer):
             }
 
         return representation
+    
+class BusListStudentCreateAndUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusListStudent
+        fields = ["end_class_time", "is_return"]
+
+
 class NoticeSerilizer(serializers.ModelSerializer):
     buslist = serializers.StringRelatedField()
 
