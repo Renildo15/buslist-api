@@ -17,6 +17,7 @@ from api.busstop_app.models import BusStop
 from api.institution_app.models import Institution
 from api.permissions import IsAdmin, IsStudent
 from api.search import apply_search
+from api.user_app.tasks import send_email_reset_password
 from api.user_app.utils.token import get_tokens_for_user
 
 from .filters import apply_filters_users
@@ -189,11 +190,11 @@ def reset_password_view(request):
             plain_message = strip_tags(html_message)
             from_email = config("EMAIL_HOST_USER")
 
-            send_mail(
+            send_email_reset_password.delay(
                 subject=subject,
-                message=plain_message,
+                plain_message=plain_message,
                 from_email=from_email,
-                recipient_list=[email],
+                email=email,
                 html_message=html_message,
             )
 
