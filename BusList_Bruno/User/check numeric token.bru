@@ -1,0 +1,18 @@
+meta {
+  name: check numeric token
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://192.168.1.13:8000/api/users/check-numeric-token/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email":"renildorabi22@gmail.com",
+    "numeric_token":"754345"
+  }
+}
