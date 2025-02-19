@@ -21,7 +21,7 @@ from api.user_app.tasks import send_email_reset_password
 from api.user_app.utils.token import get_tokens_for_user
 
 from .filters import apply_filters_users
-from .models import User
+from .models import User, NumericToken
 from .serializers import *
 from .service import UserService
 from .utils.add_user_to_group import add_user_to_group
@@ -260,6 +260,47 @@ def reset_password_confirm_view(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         return Response(
             {"error": "Token inválido."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def check_numeric_token(request):
+    if request.method == "POST":
+        numeric_token = request.data.get("numeric_token")
+        email = request.data.get("email")
+
+        if not numeric_token or not email:
+            return Response({"error": "Email ou token não informados."},status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(numeric_token) != 6:
+            return Response({"error": "Token inválido. Deve conter 6 números."}, status=status.HTTP_400_BAD_REQUEST)  
+
+        if numeric_token.isdigit() == False:
+            return Response({"error": "Token inválido. Deve ser números."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            token = NumericToken.objects.get(user=user)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Email não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
+        except NumericToken.DoesNotExist:
+            return Response(
+                {"error": "Token não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
+    
+        is_valid, message = token.validate_token(numeric_token)
+        if not is_valid:
+            return Response({"error": message}, status=status.HTTP_400_BAD_REQUEST)
+
+        token.delete()        
+        return Response({"message": message}, status=status.HTTP_200_OK)
+        
+    else:
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
 

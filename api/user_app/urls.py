@@ -14,6 +14,7 @@ urlpatterns = [
     path(
         "reset-password/<str:uidb64>/<str:token>/", reset_password_confirm_view
     ),
+    path("check-numeric-token/", check_numeric_token),
 ]
 
 urlpatternsstaff = [path("staff/list/users", staff_get_all_users_view)]
