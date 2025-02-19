@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.permissions import IsAdminOrIsDriver, IsStudent
-from api.search import apply_search, apply_search_notices, apply_search_students
+from api.search import (apply_search, apply_search_notices,
+                        apply_search_students)
 from api.user_app.models import User
 
 from .filters import *
@@ -112,7 +113,7 @@ def bus_list_student_create_view(request, bus_list_id, student_id):
     bus_list = get_object_or_404(BusList, id=bus_list_id)
     student = get_object_or_404(User, id=student_id)
     serializer = BusListStudentCreateAndUpdateSerializer(data=request.data)
-    
+
     if serializer.is_valid():
         serializer.save(bus_list=bus_list, student=student)
         data = {
@@ -146,7 +147,9 @@ def buslist_student_list_view(request, buslist_id):
         try:
             buslist = BusList.objects.get(id=buslist_id)
         except BusList.DoesNotExist:
-            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         buslistStudents = BusListStudent.objects.filter(bus_list=buslist)
         buslistStudents = apply_filters_students(buslistStudents, request)
@@ -156,30 +159,31 @@ def buslist_student_list_view(request, buslist_id):
         if buslistStudents.exists():
             serializers = BusListStudentSerializer(buslistStudents, many=True)
 
-            data = {
-                "students": serializers.data
-            }
+            data = {"students": serializers.data}
 
             return Response(data, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "Not found list"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Not found list"}, status=status.HTTP_404_NOT_FOUND
+            )
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsStudent])
 def buslist_student_update_view(request, buslist_student_id):
     buslist_student = get_object_or_404(BusListStudent, id=buslist_student_id)
     if request.method == "PATCH":
-        serializer = BusListStudentCreateAndUpdateSerializer(buslist_student, data=request.data, partial=True)
+        serializer = BusListStudentCreateAndUpdateSerializer(
+            buslist_student, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
 
-            data = {
-                "message": "Buslist student updated successfully"
-            }
+            data = {"message": "Buslist student updated successfully"}
 
             return Response(data, status=status.HTTP_201_CREATED)
         else:
@@ -188,6 +192,7 @@ def buslist_student_update_view(request, buslist_student_id):
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsStudent])
@@ -200,6 +205,7 @@ def buslist_student_detail_view(request, buslist_student_id):
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
+
 
 @api_view(["POST", "GET"])
 @permission_classes([IsAuthenticated, IsAdminOrIsDriver])
@@ -284,6 +290,7 @@ def notice_viewed_view(request, notice_id):
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsStudent])
 def buslist_detail_view(request, buslist_id):
@@ -291,8 +298,12 @@ def buslist_detail_view(request, buslist_id):
         try:
             buslist = BusList.objects.get(id=buslist_id)
         except BusList.DoesNotExist:
-            return Response({"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND)  
-        buslist_serializer = BusListSerializer(buslist, context={"exclude_students":True})
+            return Response(
+                {"message": "Not found buslist"}, status=status.HTTP_404_NOT_FOUND
+            )
+        buslist_serializer = BusListSerializer(
+            buslist, context={"exclude_students": True}
+        )
         return Response(buslist_serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(

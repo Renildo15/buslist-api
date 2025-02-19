@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserChangeForm
 
-from .models import BusStop, DriverProfile, StudentProfile, User
+from .models import BusStop, DriverProfile, NumericToken, StudentProfile, User
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -41,3 +41,4 @@ admin.site.register(User, CustomUserAdmin)
 admin.site.register(BusStop)
 admin.site.register(DriverProfile)
 admin.site.register(StudentProfile)
+admin.site.register(NumericToken)
