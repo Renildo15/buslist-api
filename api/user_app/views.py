@@ -21,13 +21,14 @@ from api.user_app.tasks import send_email_reset_password
 from api.user_app.utils.token import get_tokens_for_user
 
 from .filters import apply_filters_users
-from .models import User, NumericToken
+from .models import NumericToken, User
 from .serializers import *
 from .service import UserService
 from .utils.add_user_to_group import add_user_to_group
 from .utils.generate_numeric_token import generate_numeric_token
 
 user_service = UserService()
+
 
 def generate_token(user, device_type="web"):
     if device_type == "mobile":
@@ -150,6 +151,7 @@ def whoami_view(request):
 
     return Response(data, status=status.HTTP_200_OK)
 
+
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def change_password_view(request, user_uuid):
@@ -185,17 +187,20 @@ def reset_password_view(request):
         device = request.data.get("device", "web")
         try:
             user = User.objects.get(email=email)
-            token = generate_token(user,device)
+            token = generate_token(user, device)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
             if device == "web":
-                reset_link = request.build_absolute_uri(f"/reset-password/{uid}/{token}/")
+                reset_link = request.build_absolute_uri(
+                    f"/reset-password/{uid}/{token}/"
+                )
             else:
                 reset_link = f"Código de redefinição: {token}"
 
             subject = "Redefinir senha"
             html_message = render_to_string(
-                "password_reset_email.html", {"reset_link": reset_link, "device":device}
+                "password_reset_email.html",
+                {"reset_link": reset_link, "device": device},
             )
             plain_message = strip_tags(html_message)
             from_email = config("EMAIL_HOST_USER")
@@ -274,15 +279,25 @@ def reset_password_confirm_mobile_view(request, token):
             user = User.objects.get(email=email)
             numeric_token = NumericToken.objects.get(user=user)
         except User.DoesNotExist:
-            return Response({"error": "Email não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Email não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
         except NumericToken.DoesNotExist:
-            return Response({"error": "Token não encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Token não encontrado."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         if not new_password or not confirm_password:
-            return Response({"error": "As senhas não podem ser vazias."},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "As senhas não podem ser vazias."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if new_password != confirm_password:
-            return Response({"error": "As senhas não coincidem."},status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "As senhas não coincidem."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         is_valid, message = numeric_token.validate_token(token)
         if not is_valid:
@@ -291,11 +306,16 @@ def reset_password_confirm_mobile_view(request, token):
         user.set_password(new_password)
         user.save()
 
-        numeric_token.delete()     
-         
-        return Response({"message": "Senha alterada com sucesso."}, status=status.HTTP_200_OK)
+        numeric_token.delete()
+
+        return Response(
+            {"message": "Senha alterada com sucesso."}, status=status.HTTP_200_OK
+        )
     else:
-        return Response({"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response(
+            {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -305,13 +325,22 @@ def check_numeric_token_view(request):
         email = request.data.get("email")
 
         if not numeric_token or not email:
-            return Response({"error": "Email ou token não informados."},status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "Email ou token não informados."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         if len(numeric_token) != 6:
-            return Response({"error": "Token inválido. Deve conter 6 números."}, status=status.HTTP_400_BAD_REQUEST)  
+            return Response(
+                {"error": "Token inválido. Deve conter 6 números."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if numeric_token.isdigit() == False:
-            return Response({"error": "Token inválido. Deve ser números."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Token inválido. Deve ser números."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             user = User.objects.get(email=email)
@@ -324,13 +353,13 @@ def check_numeric_token_view(request):
             return Response(
                 {"error": "Token não encontrado."}, status=status.HTTP_404_NOT_FOUND
             )
-    
+
         is_valid, message = token.validate_token(numeric_token)
         if not is_valid:
             return Response({"error": message}, status=status.HTTP_400_BAD_REQUEST)
-  
+
         return Response({"message": message}, status=status.HTTP_200_OK)
-        
+
     else:
         return Response(
             {"message": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED

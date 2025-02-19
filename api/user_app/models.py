@@ -1,13 +1,12 @@
 from uuid import uuid4
 
-from django.utils import timezone
+from cryptography.fernet import Fernet, InvalidToken
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 from api.busstop_app.models import BusStop
 from api.institution_app.models import Institution
-
-from cryptography.fernet import Fernet, InvalidToken
 
 # Create your models here.
 
@@ -100,13 +99,17 @@ class StudentProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.matric_number}"
 
+
 key = Fernet.generate_key()
 cipher_suite = Fernet(key)
+
 
 class NumericToken(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     encrypted_numeric_token = models.CharField(max_length=300)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="numeric_tokens")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="numeric_tokens"
+    )
     attempts = models.IntegerField(default=0)
     is_blocked = models.BooleanField(default=False)
     token_created_at = models.DateTimeField(auto_now_add=True)
@@ -116,37 +119,41 @@ class NumericToken(models.Model):
         verbose_name = "Numeric Token"
         verbose_name_plural = "Numeric Tokens"
         indexes = [
-            models.Index(fields=['user']),
-            models.Index(fields=['token_expires_at']),
+            models.Index(fields=["user"]),
+            models.Index(fields=["token_expires_at"]),
         ]
-    
+
     def __str__(self):
-        return f'{self.user.first_name}'
-            
+        return f"{self.user.first_name}"
+
     def save(self, *args, **kwargs):
         if not self.token_expires_at:
             self.token_expires_at = timezone.now() + timezone.timedelta(minutes=15)
 
         if not self.encrypted_numeric_token.startswith("gAAAA"):
-            self.encrypted_numeric_token = cipher_suite.encrypt(self.encrypted_numeric_token.encode("utf-8")).decode("utf-8")
+            self.encrypted_numeric_token = cipher_suite.encrypt(
+                self.encrypted_numeric_token.encode("utf-8")
+            ).decode("utf-8")
 
         super().save(*args, **kwargs)
-    
+
     def get_decrypted_token(self):
         try:
-            return cipher_suite.decrypt(self.encrypted_numeric_token.encode("utf-8")).decode("utf-8")
+            return cipher_suite.decrypt(
+                self.encrypted_numeric_token.encode("utf-8")
+            ).decode("utf-8")
         except InvalidToken:
             return None
-    
+
     def increment_attempts(self):
         self.attempts += 1
         if self.attempts >= 5:
             self.is_blocked = True
-        self.save(update_fields=['attempts', 'is_blocked'])
+        self.save(update_fields=["attempts", "is_blocked"])
 
     def is_valid(self):
         return not self.is_blocked and timezone.now() <= self.token_expires_at
-    
+
     def validate_token(self, token):
         if self.is_blocked:
             message = "Token bloqueado por excesso de tentativas. Gere um novo token."

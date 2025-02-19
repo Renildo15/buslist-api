@@ -1,6 +1,7 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
+from django_celery_beat.models import IntervalSchedule, PeriodicTask
+
 
 @receiver(post_migrate)
 def setup_periodic_tasks(sender, **kwargs):
@@ -14,6 +15,6 @@ def setup_periodic_tasks(sender, **kwargs):
         # Crie ou recupere a tarefa periódica
         PeriodicTask.objects.get_or_create(
             interval=schedule,
-            name='Desabilitar listas de ônibus expiradas',
-            task='api.buslist_app.tasks.disable_expired_buslist',
+            name="Desabilitar listas de ônibus expiradas",
+            task="api.buslist_app.tasks.disable_expired_buslist",
         )

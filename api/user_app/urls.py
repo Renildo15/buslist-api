@@ -11,9 +11,7 @@ urlpatterns = [
     path("change-password/<str:user_uuid>/", change_password_view),
     path("forgot-password/", reset_password_view),
     path("avatar/upload/", avatar_upload_view),
-    path(
-        "reset-password/<str:uidb64>/<str:token>/", reset_password_confirm_view
-    ),
+    path("reset-password/<str:uidb64>/<str:token>/", reset_password_confirm_view),
     path("check-numeric-token/", check_numeric_token_view),
     path("reset-password/<str:token>/", reset_password_confirm_mobile_view),
 ]
