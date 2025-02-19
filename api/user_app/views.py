@@ -265,7 +265,7 @@ def reset_password_confirm_view(request, uidb64, token):
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def check_numeric_token(request):
+def check_numeric_token_view(request):
     if request.method == "POST":
         numeric_token = request.data.get("numeric_token")
         email = request.data.get("email")
