@@ -7,7 +7,7 @@ from django.db import models
 from api.busstop_app.models import BusStop
 from api.institution_app.models import Institution
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 # Create your models here.
 
@@ -133,19 +133,30 @@ class NumericToken(models.Model):
         super().save(*args, **kwargs)
     
     def get_decrypted_token(self):
-        return cipher_suite.decrypt(self.encrypted_numeric_token.encode("utf-8")).decode("utf-8")
+        try:
+            return cipher_suite.decrypt(self.encrypted_numeric_token.encode("utf-8")).decode("utf-8")
+        except InvalidToken:
+            return None
     
     def increment_attempts(self):
         self.attempts += 1
         if self.attempts >= 5:
             self.is_blocked = True
-        self.save()
+        self.save(update_fields=['attempts', 'is_blocked'])
 
     def is_valid(self):
         return not self.is_blocked and timezone.now() <= self.token_expires_at
     
     def validate_token(self, token):
-        if self.is_valid() and self.get_decrypted_token() == token:
-            return True
-        self.increment_attempts()
-        return False
+        if self.is_blocked:
+            message = "Token bloqueado por excesso de tentativas. Gere um novo token."
+            self.delete()
+            return False, message
+        if self.get_decrypted_token() != token:
+            self.increment_attempts()
+            return False, "Token inválido."
+        if not self.is_valid():
+            message = "Token expirado."
+            self.delete()
+            return False, message
+        return True, "Token válido."
